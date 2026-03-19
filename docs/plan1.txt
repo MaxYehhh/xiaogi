@@ -1,0 +1,116 @@
+XiaoGi 完整啟動規劃
+====================
+最後更新：2026-03-18
+
+Context
+-------
+- 平台：僅 Instagram（移除 TikTok）
+- 排程工具：Postiz 自架（Docker），兩台機器各自跑本機實例，免費
+- 路徑問題：XIAOGI_BASE_DIR 環境變數，各機器 .env 填入自己的路徑
+- 角色圖：用戶自備（建議用 Gemini app 生成），跳過 Cold Start 生成流程
+- 圖片生成：Ideogram v3，每日 ~$0.08–$0.12 USD
+
+
+你需要準備的東西（執行前清單）
+--------------------------------
+
+必備（缺一不可）：
+
+[ ] Docker Desktop
+    安裝並啟動 → https://www.docker.com/products/docker-desktop/
+
+[ ] Ideogram API key
+    至 ideogram.ai 申請
+
+[ ] 小吉參考圖 URL
+    用 Gemini app 生圖 → 上傳 GitHub raw → 取得公開 URL
+
+[ ] Facebook Developer App
+    用於 Postiz 連接 Instagram（需 App ID + App Secret）
+    步驟：
+    1. 前往 developers.facebook.com → 建立新 App（類型選「商業」）
+    2. 在 App 中新增產品：Instagram Graph API
+    3. 取得 App ID 和 App Secret
+    4. 加入 redirect URI：http://localhost:4007/integrations/social/instagram/callback
+    注意：個人帳號測試不需要審核，直接用開發模式即可
+
+[ ] Instagram 商業帳號
+    需連結到 Facebook 粉絲專頁（Postiz 連 IG 的必要條件）
+
+選備（可之後補）：
+
+[ ] fal.ai API key（圖片修正備援，不常用）
+
+
+執行步驟
+--------
+
+【階段一：修改專案檔案】（已完成）
+
+1. CLAUDE.md
+   - 路徑改用 $XIAOGI_BASE_DIR
+   - 移除 TikTok 相關內容
+   - Postiz endpoint 改為 $POSTIZ_BASE_URL
+
+2. skills/caption-writing.md
+   - 移除 TikTok 文案結構、hashtag、範例
+
+3. .env 範本建立（填入自己的值）：
+   XIAOGI_BASE_DIR=/Users/max/projects/xiaogi
+   IDEOGRAM_API_KEY=
+   FAL_API_KEY=
+   POSTIZ_BASE_URL=http://localhost:4007
+   POSTIZ_API_KEY=
+   POSTIZ_INSTAGRAM_INTEGRATION_ID=
+   CHARACTER_REFERENCE_URL=
+
+4. .gitignore 包含 .env 和 outputs/
+
+5. outputs/ 目錄建立
+
+
+【階段二：架設 Postiz】（需先裝 Docker）
+
+1. git clone https://github.com/gitroomhq/postiz-docker-compose ~/projects/postiz
+2. 設定環境變數（含 Facebook App ID/Secret）
+3. docker compose up -d
+4. 確認 http://localhost:4007 可存取
+5. 在 Postiz UI 連接 Instagram 帳號 → 取得 POSTIZ_INSTAGRAM_INTEGRATION_ID
+6. 在 Postiz UI 建立 API key → 取得 POSTIZ_API_KEY
+7. 將兩個值填入 .env
+
+
+【階段三：設定角色圖】
+
+1. 你提供小吉參考圖的 GitHub raw URL
+2. 填入 .env 的 CHARACTER_REFERENCE_URL
+
+
+【階段四：第一次完整執行】
+
+1. 執行日流程
+2. Ideogram 第一次生成後取得 style_code → 填入 knowledge/character.md
+3. 確認 APPROVE 後 Instagram 排程建立成功
+
+
+工具堆疊（最終確定）
+---------------------
+
+圖片生成         Ideogram v3              ~$0.08/張
+角色參考圖製作   Gemini app (Google AI+)  免費
+圖片修正備援     fal.ai FLUX Kontext      ~$0.04/次（按需）
+社群排程(IG)     Postiz 自架（Docker）    免費
+Agent 執行       Claude Code              已付費
+
+每日 API 成本：~$0.08–$0.12 USD
+
+
+關鍵檔案
+--------
+/Users/max/projects/xiaogi/CLAUDE.md
+/Users/max/projects/xiaogi/skills/caption-writing.md
+/Users/max/projects/xiaogi/.env  （不進 git）
+/Users/max/projects/xiaogi/.gitignore
+/Users/max/projects/xiaogi/knowledge/character.md
+/Users/max/projects/xiaogi/outputs/
+~/projects/postiz/docker-compose.yaml

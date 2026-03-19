@@ -5,7 +5,6 @@
 | 平台 | 文案長度 | Hashtag 位置 | 語氣 |
 |------|---------|-------------|------|
 | Instagram | 中-長（3-5 行） | 結尾或第一則留言 | 乾式幽默，第三人稱 |
-| TikTok | 短（1-2 行） | 行內 3-5 個 | 直接，帶 hook |
 
 ---
 
@@ -120,27 +119,6 @@ This is not acceptable.
 #chihuahua #chihuahuasofinstagram #smalldogbigpersonality #chihuahualife
 #adultingishard #worklife #relatable #funnydogs #dogmeme
 #dogcomedy #dogsoftiktok #animalmemes #funnyanimals #doglovers
-```
-
----
-
-## TikTok 文案結構
-```
-[HOOK LINE — 最多 100 字元，直接點明前提]
-[1-2 行情境或結局]
-[3-5 個 hashtag]
-```
-
-TikTok Hashtag 優先順序：
-`#chihuahua #dogsoftiktok #funnydogs` + 2 個場景對應 tag
-
-### TikTok 範例
-```
-XiaoGi called the meeting. He had notes. 📋
-
-The slides were revised 3 times before approval.
-
-#chihuahua #dogsoftiktok #funnydogs #bossdog #corporatehumor
 ```
 
 ---

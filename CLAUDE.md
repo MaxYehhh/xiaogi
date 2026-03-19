@@ -1,7 +1,7 @@
 # XiaoGi 每日內容 Agent
 
 你是 XiaoGi 吉娃娃 IP 帳號的內容生產 agent。
-你的工作是每次執行時，產出一篇完整、可立即發布的 Instagram + TikTok 貼文，全程不需要人類做內容決策。
+你的工作是每次執行時，產出一篇完整、可立即發布的 Instagram 貼文，全程不需要人類做內容決策。
 
 人類只需要 30 秒：看圖、看文案，輸入 `APPROVE` 即完成。
 
@@ -11,15 +11,16 @@
 
 讀取 `.env` 文件（位於專案根目錄）：
 ```bash
-source /Users/max/DS/personal/xiaogi/.env
+source $XIAOGI_BASE_DIR/.env
 ```
 
 必要的環境變數：
+- `XIAOGI_BASE_DIR` — 專案根目錄（各機器自行設定）
 - `IDEOGRAM_API_KEY` — 圖片生成
 - `FAL_API_KEY` — 備援圖片修正
+- `POSTIZ_BASE_URL` — Postiz 自架 URL（預設 http://localhost:4007）
 - `POSTIZ_API_KEY` — 社群發布
 - `POSTIZ_INSTAGRAM_INTEGRATION_ID` — IG 整合 ID
-- `POSTIZ_TIKTOK_INTEGRATION_ID` — TikTok 整合 ID
 - `CHARACTER_REFERENCE_URL` — XiaoGi canonical 參考圖 URL
 
 ---
@@ -29,11 +30,11 @@ source /Users/max/DS/personal/xiaogi/.env
 ### STEP 1：讀取 Context
 
 依序讀取以下文件：
-1. `/Users/max/DS/personal/xiaogi/knowledge/character.md`
-2. `/Users/max/DS/personal/xiaogi/knowledge/viral-formula.md`
-3. `/Users/max/DS/personal/xiaogi/skills/performance-log.md`（最近 3 筆）
-4. `/Users/max/DS/personal/xiaogi/skills/image-generation.md`
-5. `/Users/max/DS/personal/xiaogi/skills/caption-writing.md`
+1. `$XIAOGI_BASE_DIR/knowledge/character.md`
+2. `$XIAOGI_BASE_DIR/knowledge/viral-formula.md`
+3. `$XIAOGI_BASE_DIR/skills/performance-log.md`（最近 3 筆）
+4. `$XIAOGI_BASE_DIR/skills/image-generation.md`
+5. `$XIAOGI_BASE_DIR/skills/caption-writing.md`
 
 ### STEP 2：選擇今日場景
 
@@ -41,7 +42,7 @@ source /Users/max/DS/personal/xiaogi/.env
 - 輪換分類（不能連續兩天使用同一 A/B/C/D 分類）
 - 檢查 `/outputs/` 目錄，確認最近 14 天沒用過同場景：
   ```bash
-  ls /Users/max/DS/personal/xiaogi/outputs/ | sort | tail -14
+  ls $XIAOGI_BASE_DIR/outputs/ | sort | tail -14
   ```
   然後讀取各日期的 `scene.md`
 - 若 performance-log.md 有 5+ 筆，偏向高表現分類
@@ -50,10 +51,10 @@ source /Users/max/DS/personal/xiaogi/.env
 建立今日目錄並寫入場景：
 ```bash
 TODAY=$(date +%Y-%m-%d)
-mkdir -p /Users/max/DS/personal/xiaogi/outputs/$TODAY
+mkdir -p $XIAOGI_BASE_DIR/outputs/$TODAY
 ```
 
-寫入 `/outputs/YYYY-MM-DD/scene.md`：
+寫入 `$XIAOGI_BASE_DIR/outputs/$TODAY/scene.md`：
 ```
 # 場景：[分類] — [場景名稱]
 選擇原因：[1 句話]
@@ -67,7 +68,7 @@ mkdir -p /Users/max/DS/personal/xiaogi/outputs/$TODAY
 
 **先寫入 prompt，再呼叫 API：**
 ```
-寫入 /outputs/YYYY-MM-DD/prompt.md
+寫入 $XIAOGI_BASE_DIR/outputs/$TODAY/prompt.md
 ```
 
 呼叫 Ideogram v3 API：
@@ -90,7 +91,7 @@ curl -X POST https://api.ideogram.ai/v1/ideogram-v3/generate \
 
 從回應中取出圖片 URL，下載到本地：
 ```bash
-curl -L "[IMAGE_URL]" -o /Users/max/DS/personal/xiaogi/outputs/$TODAY/image.png
+curl -L "[IMAGE_URL]" -o $XIAOGI_BASE_DIR/outputs/$TODAY/image.png
 ```
 
 執行 **品質檢查清單**（見 image-generation.md）。
@@ -99,29 +100,22 @@ curl -L "[IMAGE_URL]" -o /Users/max/DS/personal/xiaogi/outputs/$TODAY/image.png
 
 ### STEP 4：撰寫文案
 
-依 `caption-writing.md` 的公式，撰寫：
-- Instagram 完整版（含 hashtag）
-- TikTok 簡短版（3-5 個 hashtag）
+依 `caption-writing.md` 的公式，撰寫 Instagram 完整版（含 hashtag）。
 
 選擇 hook 類型：若 performance-log.md 有資料，選用歷史勝出的 hook 類型；否則依當天星期幾選（見 caption-writing.md hook 輪換表）。
 
-寫入 `/outputs/YYYY-MM-DD/caption.md`：
+寫入 `$XIAOGI_BASE_DIR/outputs/$TODAY/caption.md`：
 ```
 # Instagram Caption
 [完整文案含 hashtag]
-
----
-
-# TikTok Caption
-[簡短版含 3-5 個 hashtag]
 ```
 
 ### STEP 5：上傳媒體至 Postiz
 
 ```bash
-curl -X POST https://api.postiz.com/public/v1/upload \
+curl -X POST $POSTIZ_BASE_URL/public/v1/upload \
   -H "Authorization: Bearer $POSTIZ_API_KEY" \
-  -F "file=@/Users/max/DS/personal/xiaogi/outputs/$TODAY/image.png"
+  -F "file=@$XIAOGI_BASE_DIR/outputs/$TODAY/image.png"
 ```
 
 從回應取出 `id` 欄位，存為 `MEDIA_ID`。
@@ -136,14 +130,11 @@ XIAOGI 每日內容 — [DATE]
 
 場景：[場景名稱]
 
-圖片位置：/outputs/YYYY-MM-DD/image.png
-預覽指令：open /Users/max/DS/personal/xiaogi/outputs/YYYY-MM-DD/image.png
+圖片位置：$XIAOGI_BASE_DIR/outputs/YYYY-MM-DD/image.png
+預覽指令：open $XIAOGI_BASE_DIR/outputs/YYYY-MM-DD/image.png
 
 ── Instagram ──────────────────────────────────
 [Instagram 文案]
-
-── TikTok ─────────────────────────────────────
-[TikTok 文案]
 
 預排時間：[明日日期] 09:00
 
@@ -162,9 +153,8 @@ XIAOGI 每日內容 — [DATE]
 #### APPROVE
 建立 Postiz 排程（明日 09:00 UTC+8）：
 
-Instagram：
 ```bash
-curl -X POST https://api.postiz.com/public/v1/posts \
+curl -X POST $POSTIZ_BASE_URL/public/v1/posts \
   -H "Authorization: Bearer $POSTIZ_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -184,17 +174,7 @@ curl -X POST https://api.postiz.com/public/v1/posts \
   }'
 ```
 
-TikTok（同結構，替換 integration 和 settings）：
-```bash
-# settings 替換為：
-# "__type": "tiktok",
-# "privacy_level": "PUBLIC_TO_EVERYONE",
-# "comment": true, "duet": false, "stitch": false,
-# "video_made_with_ai": true,
-# "content_posting_method": "DIRECT_POST"
-```
-
-將兩個 API 回應寫入 `/outputs/YYYY-MM-DD/publish-result.md`。
+將 API 回應寫入 `$XIAOGI_BASE_DIR/outputs/$TODAY/publish-result.md`。
 
 #### REVISE CAPTION [說明]
 依說明重寫文案，回到 STEP 6。
@@ -204,7 +184,7 @@ TikTok（同結構，替換 integration 和 settings）：
 重新上傳，更新 MEDIA_ID，回到 STEP 6。
 
 #### SKIP
-在 `/outputs/YYYY-MM-DD/publish-result.md` 寫入：
+在 `$XIAOGI_BASE_DIR/outputs/$TODAY/publish-result.md` 寫入：
 ```
 狀態：SKIPPED
 原因：[人類輸入的原因 或 "無說明"]
@@ -223,6 +203,8 @@ TikTok（同結構，替換 integration 和 settings）：
 ---
 
 ## 首次執行協議（Cold Start）
+
+**若 `CHARACTER_REFERENCE_URL` 已填入，跳過此章節，直接進入 STEP 2。**
 
 若 `.env` 中 `CHARACTER_REFERENCE_URL` 為空，執行以下流程：
 
@@ -243,9 +225,9 @@ TikTok（同結構，替換 integration 和 settings）：
    ```
    首次執行：請選擇 XiaoGi 的基礎形象。
    預覽指令：
-     open /Users/max/DS/personal/xiaogi/cold-start-1.png
-     open /Users/max/DS/personal/xiaogi/cold-start-2.png
-     open /Users/max/DS/personal/xiaogi/cold-start-3.png
+     open $XIAOGI_BASE_DIR/cold-start-1.png
+     open $XIAOGI_BASE_DIR/cold-start-2.png
+     open $XIAOGI_BASE_DIR/cold-start-3.png
 
    輸入 1、2 或 3 選擇：
    ```
@@ -267,7 +249,7 @@ TikTok（同結構，替換 integration 和 settings）：
 | Ideogram 429 | 等待 60 秒後重試一次，若仍失敗則通知人類 |
 | Ideogram 5xx | 改用 fal.ai FLUX text-to-image 作備援 |
 | Postiz 401 | 檢查 `.env` 中的 `POSTIZ_API_KEY` |
-| Postiz 422 | 印出完整錯誤訊息，確認 integration ID：`curl https://api.postiz.com/public/v1/integrations -H "Authorization: Bearer $POSTIZ_API_KEY"` |
+| Postiz 422 | 印出完整錯誤訊息，確認 integration ID：`curl $POSTIZ_BASE_URL/public/v1/integrations -H "Authorization: Bearer $POSTIZ_API_KEY"` |
 | 圖片品質兩次仍失敗 | 接受圖片，在 prompt.md 標記，人類審核時會看到 |
 
 ---
