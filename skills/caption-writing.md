@@ -4,7 +4,7 @@
 
 | 平台 | 文案長度 | Hashtag 位置 | 語氣 |
 |------|---------|-------------|------|
-| Instagram | 中-長（3-5 行） | 結尾或第一則留言 | 乾式幽默，第三人稱 |
+| Instagram | 中-長（3-5 行） | 結尾或第一則留言 | 乾式幽默，第一人稱（小吉自述） |
 
 ---
 
@@ -22,11 +22,13 @@
 ```
 
 ### 語氣規則
-- 第三人稱：`"XiaoGi reviewed the Q3 projections and found them disappointing."`
+- **第一人稱**，小吉自述：`"我 8 點就到了。文件昨晚看完了。"`
+- 語言：**繁體中文為主**，hashtag 中英混搭
+- 口吻**生活化**，像真人在說話，不要像行銷文案
 - **不要打破第四道牆**。他不是「一隻在假裝的狗」，他就是在做這件事。
 - 不要用驚嘆號，除非是諷刺正式語境
 - 避免：「好可愛」、「adorable」、「aww」——這些讓他從角色變成寵物
-- **口吻基調**：乾式英式冷幽默（Dry British understatement）
+- **口吻基調**：冷靜、直接、帶點理所當然的自信
 
 ---
 
@@ -74,51 +76,48 @@
 
 ### A類 — 董事會
 ```
-XiaoGi called the 9am. He had notes.
+我 8 點就到了。
+文件昨晚看完了。
+今天的會，我來主持。
 
-The slides were revised three times before he approved them.
+你們慢慢來，我等。
 
-Have you ever had a meeting this productive?
-
-#chihuahua #chihuahuasofinstagram #smalldogbigpersonality #chihuahualife
-#bossdog #dogboss #corporatelife #officedogs #ceovibes #corporatehumor
-#funnydogs #dogmeme #dogcomedy #dogsoftiktok #animalmemes
+#吉娃娃 #吉娃娃日常 #狗狗 #毛孩 #寵物 #chihuahua #chihuahuasofinstagram
+#bossdog #corporatelife #officedogs #dogmeme #dogcomedy #funnydogs #animalmemes
 ```
 
 ### B類 — 高級餐廳服務生
 ```
-XiaoGi has been in the hospitality industry for six years.
-He does not recommend the fish.
+我做這行六年了。
+魚不推，今天換別的。
 
-What would you order?
+你要點什麼？
 
-#chihuahua #chihuahuasofinstagram #smalldogbigpersonality #chihuahualife
-#dogsatwork #workingdog #restaurantdog #funnydogs #dogmeme
-#dogcomedy #dogsoftiktok #animalmemes #doglovers #funnyanimals
+#吉娃娃 #吉娃娃日常 #狗狗 #毛孩 #寵物 #chihuahua #chihuahuasofinstagram
+#dogsatwork #workingdog #restaurantdog #dogmeme #dogcomedy #funnydogs #animalmemes
 ```
 
 ### A類 — 工地監工
 ```
-XiaoGi reviewed the structural plans at 7am.
-He found two discrepancies.
+早上七點看完結構圖。
+發現兩個問題。
+午餐前都改好了。
 
-They were fixed before lunch.
+這叫做效率。
 
-#chihuahua #chihuahuasofinstagram #smalldogbigpersonality #chihuahualife
-#bossdog #workingdog #constructiondog #corporatehumor #funnydogs
-#dogmeme #dogcomedy #dogsoftiktok #animalmemes #doglovers
+#吉娃娃 #吉娃娃日常 #狗狗 #毛孩 #寵物 #chihuahua #chihuahuasofinstagram
+#bossdog #workingdog #corporatehumor #dogmeme #dogcomedy #funnydogs #animalmemes
 ```
 
 ### D類 — 候診室
 ```
-XiaoGi has been waiting 47 minutes.
-His 2:30 appointment was at 2:30.
+我的 2:30 預約是 2:30。
+現在 3:17。
 
-This is not acceptable.
+我沒有要生氣，我只是在計時。
 
-#chihuahua #chihuahuasofinstagram #smalldogbigpersonality #chihuahualife
-#adultingishard #worklife #relatable #funnydogs #dogmeme
-#dogcomedy #dogsoftiktok #animalmemes #funnyanimals #doglovers
+#吉娃娃 #吉娃娃日常 #狗狗 #毛孩 #寵物 #chihuahua #chihuahuasofinstagram
+#adultingishard #relatable #dogmeme #dogcomedy #funnydogs #animalmemes
 ```
 
 ---

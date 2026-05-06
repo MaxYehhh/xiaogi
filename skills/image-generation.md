@@ -3,28 +3,25 @@
 ## API：Ideogram v3（主力）
 
 ```
-Endpoint: POST https://api.ideogram.ai/v1/ideogram-v3/generate
-Auth:     Authorization: Bearer $IDEOGRAM_API_KEY
+Endpoint: POST https://api.ideogram.ai/generate
+Auth:     Api-Key: $IDEOGRAM_API_KEY
 ```
 
 ## 請求模板
 
 ```bash
 curl -X POST https://api.ideogram.ai/v1/ideogram-v3/generate \
-  -H "Authorization: Bearer $IDEOGRAM_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "image_request": {
-      "prompt": "[GENERATED_PROMPT]",
-      "model": "V_3",
-      "style": "REALISTIC",
-      "rendering_speed": "QUALITY",
-      "aspect_ratio": "ASPECT_1_1",
-      "expand_prompt": false,
-      "reference_image_urls": ["'"$CHARACTER_REFERENCE_URL"'"],
-      "style_codes": ["[LOCKED_STYLE_CODE]"]
-    }
-  }'
+  -H "Api-Key: $IDEOGRAM_API_KEY" \
+  -F "prompt=[GENERATED_PROMPT]" \
+  -F "style_type=REALISTIC" \
+  -F "rendering_speed=QUALITY" \
+  -F "aspect_ratio=1x1" \
+  -F "character_reference_images=@$XIAOGI_BASE_DIR/references/小吉.png"
+```
+
+取得 style_codes 後加入（第一次執行後填入）：
+```bash
+  -F "style_codes=[LOCKED_STYLE_CODE]"
 ```
 
 ---
@@ -38,7 +35,7 @@ curl -X POST https://api.ideogram.ai/v1/ideogram-v3/generate \
 
 ### SUBJECT_BLOCK（主體描述）
 ```
-A small fawn Chihuahua with large erect ears, amber eyes, and a white chest blaze, [具體的動作描述]
+A small white long-haired Chihuahua with large ears, dark round eyes, and fluffy white fur, [具體的動作描述]
 ```
 
 範例：
@@ -79,21 +76,21 @@ in a [具體場所] with [道具1], [道具2], and [道具3]
 
 ### 場景：董事會主持
 ```
-A small fawn Chihuahua with large erect ears, amber eyes, and a white chest
-blaze, sitting at the head of a long mahogany boardroom table, front paws
-resting on the table surface, gazing authoritatively at documents spread
-before him. In a modern corporate boardroom with floor-to-ceiling windows,
-leather executive chairs on both sides, and a large presentation screen
-behind him, standard-height chairs clearly dwarfing him. Soft overhead
+A small white long-haired Chihuahua with large ears, dark round eyes, and
+fluffy white fur, sitting at the head of a long mahogany boardroom table,
+front paws resting on the table surface, gazing authoritatively at documents
+spread before him. In a modern corporate boardroom with floor-to-ceiling
+windows, leather executive chairs on both sides, and a large presentation
+screen behind him, standard-height chairs clearly dwarfing him. Soft overhead
 fluorescent with window fill light. Professional. Photorealistic. Deadpan.
 No eye contact with camera.
 ```
 
 ### 場景：高級餐廳服務生
 ```
-A small fawn Chihuahua with large erect ears, amber eyes, and a white chest
-blaze, standing upright holding a small notepad, wearing a formal black
-waiter's vest, attentively taking an order. In an upscale fine dining
+A small white long-haired Chihuahua with large ears, dark round eyes, and
+fluffy white fur, standing upright holding a small notepad, wearing a formal
+black waiter's vest, attentively taking an order. In an upscale fine dining
 restaurant with white tablecloths, crystal glassware, and warm chandelier
 lighting, a full-size dining chair visible beside him for scale. Warm
 candlelight and ceiling pendants. Intimate and upscale. Photorealistic.
@@ -102,10 +99,10 @@ Focused. Completely absorbed in task.
 
 ### 場景：工地監工
 ```
-A small fawn Chihuahua with large erect ears, amber eyes, and a white chest
-blaze, wearing a yellow hard hat, standing on a construction site holding a
-rolled-up blueprint under one paw, surveying the work with an authoritative
-expression. Industrial construction site with scaffolding, heavy machinery,
+A small white long-haired Chihuahua with large ears, dark round eyes, and
+fluffy white fur, wearing a yellow hard hat, standing on a construction site
+holding a rolled-up blueprint under one paw, surveying the work with an
+authoritative expression. Industrial construction site with scaffolding, heavy machinery,
 and workers in background, standard construction equipment towers over him.
 Industrial overhead lighting with ambient dust haze. Photorealistic.
 Authoritative. Scene feels real and unposed.
@@ -183,7 +180,7 @@ curl -X POST https://fal.run/fal-ai/flux-pro/kontext \
 
 | 用途 | aspect_ratio | 解析度 |
 |------|-------------|--------|
-| Instagram 貼文（預設） | `ASPECT_1_1` | 1080×1080 |
+| Instagram 貼文（預設） | `1x1` | 1080×1080 |
 | Instagram Story / TikTok | `ASPECT_9_16` | 1080×1920 |
 | 每週一額外輸出 | 同時生成 1:1 和 9:16 |
 

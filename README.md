@@ -1,6 +1,8 @@
 # XiaoGi — 每日內容 Agent
 
-> 一隻完全不知道自己有多小的吉娃娃。全自動 Instagram + TikTok 內容生產系統。
+> 一隻完全不知道自己有多小的吉娃娃。全自動 Instagram 內容生產系統。
+
+**現況：Phase 1 完成。第一篇貼文已成功發布（2026-03-21）。**
 
 ---
 
@@ -11,7 +13,7 @@
 吉娃娃 + 與其體型身份不符的場景 = 視覺衝擊
 ```
 
-XiaoGi（小吉）是一隻蘋果頭吉娃娃，在任何場合都以十足的主管自信行事。幽默感來自他的**認真**，不是搞笑。他永遠是主控方，永遠不扮演弱者。
+XiaoGi（小吉）是一隻長毛吉娃娃，在任何場合都以十足的主管自信行事。幽默感來自他的**認真**，不是搞笑。他永遠是主控方，永遠不扮演弱者。
 
 ---
 
@@ -41,7 +43,7 @@ SKIP                 → 跳過今天
 ```
 xiaogi/
 ├── CLAUDE.md                  # Agent 執行規則（每日流程、錯誤處理、Cold Start）
-├── .env                       # API 金鑰（不進 git）
+├── .env                       # API 金鑰與設定（不進 git）
 │
 ├── knowledge/                 # 靜態知識庫（人工維護）
 │   ├── character.md           # 角色設定書：XiaoGi 外型、視覺規格、Prompt 禁忌
@@ -52,12 +54,24 @@ xiaogi/
 │   ├── caption-writing.md     # 文案公式、Hook 輪換表、Hashtag 策略
 │   └── performance-log.md     # 每篇貼文 48h 後的成效記錄與聚合洞察
 │
-└── outputs/                   # 每日執行產出（自動建立）
+├── docker/                    # Postiz 自架基礎設施
+│   └── docker-compose.yml     # 5 個服務的完整配置
+│
+├── docs/                      # 文件
+│   ├── project-status.md      # 專案進度快照（每次執行前讀取）
+│   ├── setup-sop.md           # 從零重建系統的 SOP
+│   └── docker-setup.md        # Docker / Postiz 架設細節
+│
+├── references/                # 角色參考圖
+│   ├── 小吉.png               # 主要 character reference（呼叫 Ideogram 時帶入）
+│   └── 風格參考/              # 視覺風格參考圖
+│
+└── outputs/                   # 每日執行產出（.gitignore，自動建立）
     └── YYYY-MM-DD/
         ├── scene.md           # 今日場景選擇與輪換確認
         ├── prompt.md          # Ideogram prompt（含失敗記錄）
         ├── image.png          # 生成圖片
-        ├── caption.md         # Instagram + TikTok 文案
+        ├── caption.md         # Instagram 文案
         └── publish-result.md  # Postiz API 回應 / SKIPPED 記錄
 ```
 
@@ -67,10 +81,10 @@ xiaogi/
 
 | Step | 內容 | 工具 |
 |------|------|------|
-| 1 | 讀取 character.md、viral-formula.md、performance-log.md | — |
+| 1 | 讀取 project-status.md、character.md、viral-formula.md、performance-log.md | — |
 | 2 | 依輪換規則選擇今日場景，建立 `outputs/YYYY-MM-DD/` | — |
 | 3 | 建構 prompt → 呼叫 Ideogram v3 API → 品質檢查 → 下載圖片 | Ideogram v3 |
-| 4 | 依星期幾 / 歷史成效選 hook 類型，撰寫 IG + TikTok 文案 | — |
+| 4 | 依星期幾 / 歷史成效選 hook 類型，撰寫 Instagram 文案 | — |
 | 5 | 上傳圖片至 Postiz，取得 `MEDIA_ID` | Postiz Upload API |
 | 6 | 印出預覽，等待人類輸入 | — |
 | 7 | APPROVE → 建立排程；REVISE → 修正後回到 Step 6；SKIP → 記錄 | Postiz Posts API |
@@ -110,9 +124,26 @@ xiaogi/
 |------|------|---------|
 | [Ideogram v3](https://ideogram.ai) | 圖片生成（主力） | `IDEOGRAM_API_KEY` |
 | [fal.ai FLUX Kontext](https://fal.ai) | 圖片細節修正（備援） | `FAL_API_KEY` |
-| [Postiz](https://postiz.com) | 社群媒體排程發布 | `POSTIZ_API_KEY` |
+| [Postiz](https://postiz.com)（自架） | 社群媒體排程發布 | `POSTIZ_API_KEY`、`POSTIZ_BASE_URL` |
+| Cloudflare R2 | 圖片儲存（公開 URL，供 Instagram 抓取） | 透過 Postiz 上傳 |
 
 每日 API 成本上限：約 **$0.28 USD**（3 次 Ideogram + 1 次 Kontext）。
+
+---
+
+## 環境設定
+
+複製 `.env.example`（若有）或手動建立 `.env`：
+
+```bash
+XIAOGI_BASE_DIR=/path/to/xiaogi        # 各機器自行設定
+IDEOGRAM_API_KEY=...
+FAL_API_KEY=...
+POSTIZ_BASE_URL=http://localhost:4007  # 自架 Postiz 位址
+POSTIZ_API_KEY=...
+POSTIZ_INSTAGRAM_INTEGRATION_ID=...
+CHARACTER_REFERENCE_URL=...            # Cold Start 完成後填入
+```
 
 ---
 
@@ -129,15 +160,8 @@ xiaogi/
 
 ---
 
-## 環境設定
+## 進度追蹤
 
-複製 `.env.example`（若有）或手動建立 `.env`：
+詳見 `docs/project-status.md`（每次 `/run` 前自動讀取）。
 
-```bash
-IDEOGRAM_API_KEY=...
-FAL_API_KEY=...
-POSTIZ_API_KEY=...
-POSTIZ_INSTAGRAM_INTEGRATION_ID=...
-POSTIZ_TIKTOK_INTEGRATION_ID=...
-CHARACTER_REFERENCE_URL=...
-```
+**已驗證：** Ideogram v3 生成、Postiz 上傳/排程、Cloudflare R2 公開存取、Instagram 實際發布、Docker 全容器啟動。

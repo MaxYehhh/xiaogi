@@ -10,11 +10,11 @@
 ## 視覺規格（每次生成都要鎖定這些）
 
 ### 外型
-- 品種：短毛吉娃娃，蘋果頭（apple-head skull）
-- 毛色：淺棕/黃褐色底，胸口有白色斑塊
+- 品種：長毛吉娃娃，蘋果頭（apple-head skull）
+- 毛色：純白色/奶白色，毛髮蓬鬆柔軟
 - 體型提示：在場景中，相對於人類尺度的物件，他的體型要明顯偏小
-- 眼睛：大、深琥珀色、略為突出——品種特徵
-- 耳朵：大、直立、三角形——每張圖都要清楚可見
+- 眼睛：大、深色（深棕近黑）、略為突出——品種特徵
+- 耳朵：大、略微展開——每張圖都要清楚可見
 - 表情：專注、有權威感、認真——除非場景需要，否則絕對不要「可愛/微笑」
 
 ### Ideogram API Reference Anchor
@@ -34,7 +34,7 @@ style_codes: ["[FILL_AFTER_FIRST_APPROVED_GENERATION]"]
 - aspect_ratio: "ASPECT_1_1"（IG feed）或 "ASPECT_9_16"（Stories/TikTok）
 
 ### Prompt 必帶元素
-- "a small fawn Chihuahua with large erect ears and amber eyes"
+- "a small white long-haired Chihuahua with large ears, dark round eyes, and fluffy white fur"
 - 明確說明場景情境，不要抽象描述
 - 至少一個人類尺度的對比物件（椅子、桌子、工具）
 

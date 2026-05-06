@@ -71,9 +71,12 @@ Context
 
 【階段二：架設 Postiz】（需先裝 Docker）
 
-1. git clone https://github.com/gitroomhq/postiz-docker-compose ~/projects/postiz
-2. 設定環境變數（含 Facebook App ID/Secret）
-3. docker compose up -d
+詳細步驟、目錄結構、試錯教訓請見：docs/docker-setup.md
+
+簡版流程：
+1. 確認 Docker Desktop 已開啟並初始化完成
+2. 在 docker/docker-compose.yml 填入 FACEBOOK_APP_ID 和 FACEBOOK_APP_SECRET
+3. cd /Users/max/projects/xiaogi/docker && docker compose up -d
 4. 確認 http://localhost:4007 可存取
 5. 在 Postiz UI 連接 Instagram 帳號 → 取得 POSTIZ_INSTAGRAM_INTEGRATION_ID
 6. 在 Postiz UI 建立 API key → 取得 POSTIZ_API_KEY

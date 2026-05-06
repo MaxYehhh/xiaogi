@@ -30,6 +30,7 @@ source $XIAOGI_BASE_DIR/.env
 ### STEP 1：讀取 Context
 
 依序讀取以下文件：
+0. `$XIAOGI_BASE_DIR/docs/project-status.md`（專案進度快照，最優先讀）
 1. `$XIAOGI_BASE_DIR/knowledge/character.md`
 2. `$XIAOGI_BASE_DIR/knowledge/viral-formula.md`
 3. `$XIAOGI_BASE_DIR/skills/performance-log.md`（最近 3 筆）
@@ -71,22 +72,15 @@ mkdir -p $XIAOGI_BASE_DIR/outputs/$TODAY
 寫入 $XIAOGI_BASE_DIR/outputs/$TODAY/prompt.md
 ```
 
-呼叫 Ideogram v3 API：
+呼叫 Ideogram v3 API（multipart/form-data）：
 ```bash
 curl -X POST https://api.ideogram.ai/v1/ideogram-v3/generate \
-  -H "Authorization: Bearer $IDEOGRAM_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "image_request": {
-      "prompt": "[PROMPT]",
-      "model": "V_3",
-      "style": "REALISTIC",
-      "rendering_speed": "QUALITY",
-      "aspect_ratio": "ASPECT_1_1",
-      "expand_prompt": false,
-      "reference_image_urls": ["'"$CHARACTER_REFERENCE_URL"'"]
-    }
-  }'
+  -H "Api-Key: $IDEOGRAM_API_KEY" \
+  -F "prompt=[PROMPT]" \
+  -F "style_type=REALISTIC" \
+  -F "rendering_speed=QUALITY" \
+  -F "aspect_ratio=1x1" \
+  -F "character_reference_images=@$XIAOGI_BASE_DIR/references/小吉.png"
 ```
 
 從回應中取出圖片 URL，下載到本地：
@@ -114,7 +108,7 @@ curl -L "[IMAGE_URL]" -o $XIAOGI_BASE_DIR/outputs/$TODAY/image.png
 
 ```bash
 curl -X POST $POSTIZ_BASE_URL/public/v1/upload \
-  -H "Authorization: Bearer $POSTIZ_API_KEY" \
+  -H "Authorization: $POSTIZ_API_KEY" \
   -F "file=@$XIAOGI_BASE_DIR/outputs/$TODAY/image.png"
 ```
 
@@ -155,7 +149,7 @@ XIAOGI 每日內容 — [DATE]
 
 ```bash
 curl -X POST $POSTIZ_BASE_URL/public/v1/posts \
-  -H "Authorization: Bearer $POSTIZ_API_KEY" \
+  -H "Authorization: $POSTIZ_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "type": "schedule",
@@ -164,8 +158,10 @@ curl -X POST $POSTIZ_BASE_URL/public/v1/posts \
     "tags": [],
     "posts": [{
       "integration": { "id": "'"$POSTIZ_INSTAGRAM_INTEGRATION_ID"'" },
-      "content": "[INSTAGRAM_CAPTION]",
-      "image": [{ "id": "'"$MEDIA_ID"'" }],
+      "value": [{
+        "content": "[INSTAGRAM_CAPTION]",
+        "image": [{ "id": "'"$MEDIA_ID"'", "path": "[MEDIA_PATH]" }]
+      }],
       "settings": {
         "__type": "instagram-standalone",
         "post_type": "post"
@@ -249,7 +245,7 @@ curl -X POST $POSTIZ_BASE_URL/public/v1/posts \
 | Ideogram 429 | 等待 60 秒後重試一次，若仍失敗則通知人類 |
 | Ideogram 5xx | 改用 fal.ai FLUX text-to-image 作備援 |
 | Postiz 401 | 檢查 `.env` 中的 `POSTIZ_API_KEY` |
-| Postiz 422 | 印出完整錯誤訊息，確認 integration ID：`curl $POSTIZ_BASE_URL/public/v1/integrations -H "Authorization: Bearer $POSTIZ_API_KEY"` |
+| Postiz 422 | 印出完整錯誤訊息，確認 integration ID：`curl $POSTIZ_BASE_URL/public/v1/integrations -H "Authorization: $POSTIZ_API_KEY"` |
 | 圖片品質兩次仍失敗 | 接受圖片，在 prompt.md 標記，人類審核時會看到 |
 
 ---
